@@ -1,0 +1,24 @@
+//@version=1
+study(title="Ichimoku Cloud", overlay=true)
+
+tenkanSen = input(9, minval=1, title="Conversion Line Periods"),
+kijunSen = input(26, minval=1, title="Base Line Periods")
+chikouSpan = input(52, minval=1, title="Lagging Span 2 Periods"),
+displacement = input(26, minval=1, title="Displacement")
+
+donchian(len) => avg(lowest(len), highest(len))
+
+conversionLine = donchian(tenkanSen)
+baseLine = donchian(kijunSen)
+senkouSpanA = avg(conversionLine, baseLine)
+senkouSpanB = donchian(chikouSpan)
+
+plot(conversionLine, color=#1b18d9, title="Conversion Line")
+plot(baseLine, color=#1b18d9, title="Base Line")
+plot(close, offset = -displacement + 1, color=#1b18d9, title="Lagging Span")
+
+p1 = plot(senkouSpanA, offset = displacement - 1, color=color.green,
+ title="Lead 1")
+p2 = plot(senkouSpanB, offset = displacement - 1, color=color.red, 
+ title="Lead 2")
+fill(p1, p2, color = senkouSpanA > senkouSpanB ? color.green : color.red)
